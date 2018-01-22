@@ -1,6 +1,4 @@
-# Michael Louie
-# Walmart Labs Ticket Service Coding Challenge
-# 01/21/2018
+## Walmart Labs Ticket Service Coding Challenge - 01/21/2018
 Implementation of a simple ticket service that facilitates the discovery, temporary hold, and final reservation of seats within a high-demand performance
 venue.
 
