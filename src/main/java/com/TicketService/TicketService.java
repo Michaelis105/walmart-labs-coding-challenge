@@ -1,7 +1,7 @@
-package main.java.com;
+package main.java.com.TicketService;
 
 /**
- * As given in spec
+ * As provided in spec
  */
 public interface TicketService {
     /**

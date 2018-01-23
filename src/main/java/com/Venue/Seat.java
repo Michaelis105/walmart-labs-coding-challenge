@@ -1,5 +1,9 @@
-package main.java.com;
+package main.java.com.Venue;
 
+/**
+ * Seat is a single seat as part of a seat arrangement and
+ * has only one state of occupancy at a given time.
+ */
 public class Seat {
 
     private int id;
