@@ -16,6 +16,9 @@ This is not a viewing experience study but let's assume the best seats are "up c
 
 #### Building 
 
+1. Ensure your JAVA_HOME to JDK 1.8.X path.
+2. 
+
 #### Testing
 
 ### Design Overview

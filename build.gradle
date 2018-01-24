@@ -1,0 +1,11 @@
+group = 'Michael Louie'
+description = 'Walmart Labs Ticket Service'
+version = '1.0'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+dependencies {
+    compile files(org.gradle.internal.jvm.Jvm.current().toolsJar)
+    testCompile "junit:junit:4.12"
+}
