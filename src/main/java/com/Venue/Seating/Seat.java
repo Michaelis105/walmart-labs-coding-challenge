@@ -1,4 +1,4 @@
-package main.java.com.Venue;
+package main.java.com.Venue.Seating;
 
 /**
  * Seat is a single seat as part of a seat arrangement and
@@ -19,6 +19,8 @@ public class Seat {
     }
 
     public int getId() { return id; }
+
+    public SeatState getSeatState() { return ss; }
 
     public synchronized void markOpen() { ss = SeatState.OPEN; }
     public synchronized void markHold() { ss = SeatState.HOLD; }

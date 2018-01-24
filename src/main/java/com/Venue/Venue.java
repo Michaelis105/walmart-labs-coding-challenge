@@ -1,29 +1,25 @@
 package main.java.com.Venue;
 
+import main.java.com.Venue.Seating.Seater;
+
 /**
  * Venue represents any general event.
  */
 public class Venue {
 
-    private Seats seats;
+    private Seater str;
 
     /**
-     * Create venue without seats.
+     * Create venue.
      * For purpose of exercise, all venues should have seats.
      */
-    public Venue() { this(null); }
-
-    /**
-     * Create venue with seats.
-     * @param seats
-     */
-    public Venue(Seats seats) { this.seats = seats; }
+    public Venue(int row, int col) { str = new Seater(row, col); }
 
     /**
      * Gets seats
      * @return seats
      */
-    public Seats getSeats() { return seats; }
+    public Seater getSeater() { return str; }
 
     /**
      * Some other service/class would call methods pertaining to venue.

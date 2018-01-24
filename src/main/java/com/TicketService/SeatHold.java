@@ -1,6 +1,6 @@
 package main.java.com.TicketService;
 
-import main.java.com.Venue.Seat;
+import main.java.com.Venue.Seating.Seat;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -17,7 +17,6 @@ public class SeatHold {
     private Date createDate;
 
     public SeatHold(int seatHoldId, String customerEmail, List<Seat> seatsHold) throws TicketServiceException {
-        if (null == seatsHold || seatsHold.size() == 0) throw new TicketServiceException("No seats to hold");
         this.seatHoldId = seatHoldId;
         this.customerEmail = customerEmail;
         this.seatsHold = new LinkedList<Seat>(seatsHold);

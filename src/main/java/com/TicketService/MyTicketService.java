@@ -1,6 +1,7 @@
 package main.java.com.TicketService;
 
-import main.java.com.Venue.Seat;
+import main.java.com.Venue.Seating.Seat;
+import main.java.com.Venue.Seating.SeatState;
 import main.java.com.Venue.Venue;
 
 import java.util.*;
@@ -26,13 +27,13 @@ public class MyTicketService implements TicketService {
             "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[_A-Za-z]{2,})$";
 
     public MyTicketService(Venue v) throws TicketServiceException {
-        this(v, 30); // default hold expiration time
+        this(v, DEFAULT_HOLD_EXPIRATION_TIME);
     }
 
     public MyTicketService(Venue v, int holdExpirationTime) throws TicketServiceException {
         if (null == v) throw new TicketServiceException("Venue was null.");
         this.v = v;
-        this.holdExpirationTime = (holdExpirationTime >= 0) ? holdExpirationTime : 30;
+        this.holdExpirationTime = (holdExpirationTime >= 0) ? holdExpirationTime : DEFAULT_HOLD_EXPIRATION_TIME;
 
         seatHoldTracker = new HashMap<Integer, SeatHold>();
         confirmationTracker = new HashMap<String, SeatHold>();
@@ -55,20 +56,27 @@ public class MyTicketService implements TicketService {
      * run on a 'regular' basis (once every minute) as a batch process.
      */
     public void removeExpiredSeatHolds() {
-        // TODO: Implement method
-        // get current time
-        // iterate through all seat holds
-        // if different between current time and seat hold time is greater than DEFAULT_HOLD_EXPIRATION_TIME
-        // then open all
-        throw new UnsupportedOperationException();
+        Date cur = new Date();
+        for (SeatHold sh : seatHoldTracker.values()) {
+            long duration = cur.getTime() - sh.getCreateDate().getTime();
+            if (duration >= holdExpirationTime) {
+                try { markSeatsOpen(sh.getSeatsHold()); }
+                catch (Exception e) { /* Error "releasing" held seats. */ }
+                seatHoldTracker.remove(sh.getSeatHoldId(), sh);
+            }
+        }
     }
 
     /**
      * Marks all given seats open. Used by removeExpiredSeatHolds().
      * @param seats seats to be marked open
      */
-    public void markSeatsOpen(List<Seat> seats) {
-        if (seats != null) for (Seat s : seats) s.markOpen();
+    public void markSeatsOpen(List<Seat> seats) throws TicketServiceException {
+        if (null == seats) throw new TicketServiceException("Cannot mark null seats!");
+        if (seats != null) {
+            try { v.getSeater().processSeats(seats, SeatState.OPEN);}
+            catch (Exception e) { /* Error "releasing" held seats. */ }
+        }
     }
 
     /**
@@ -87,7 +95,7 @@ public class MyTicketService implements TicketService {
      * @return the number of tickets/seats available in the venue
      */
     public int numSeatsAvailable() {
-        return v.getSeats().getNumOpenSeats();
+        return v.getSeater().getNumOpenSeats();
     }
 
     /**
@@ -108,11 +116,18 @@ public class MyTicketService implements TicketService {
             Seat s = findNextBestSeat();
             if (null == s) {
                 // Already checked sufficient seats but still ran out, possible race condition
-                markSeatsOpen(seats);
+                try { markSeatsOpen(seats); }
+                catch (TicketServiceException e) { /* Error attempting to clean up corrupted seat hold. */ }
                 return null;
             }
-            s.markHold();
             seats.add(s);
+        }
+
+        try { v.getSeater().processSeats(seats, SeatState.HOLD); }
+        catch (Exception e) {
+            /* Error attempting to hold seats. Inform caller of holding error. */
+            try { markSeatsOpen(seats); }
+            catch (TicketServiceException ex) { /* Error attempting to clean up corrupted seat hold. */ }
         }
 
         int seatHoldId = Integer.valueOf(seatHoldIdGenerator.generateId());
@@ -121,12 +136,12 @@ public class MyTicketService implements TicketService {
             sh = new SeatHold(seatHoldId, customerEmail, seats);
         } catch (TicketServiceException e) {
             // Issue creating seatHold (empty seats list already checked handled above, error should not occur)
-            markSeatsOpen(seats);
+            try { markSeatsOpen(seats); }
+            catch (TicketServiceException ex) { /* Error attempting to clean up corrupted seat hold. */ }
             return null;
         }
         seatHoldTracker.put(seatHoldId, sh);
         return sh;
-
     }
 
     /**
@@ -142,7 +157,12 @@ public class MyTicketService implements TicketService {
         if (null == sh) return null; // seatHold not found, either inadvertently removed from system or invalid seatHoldId
         if (!sh.getCustomerEmail().equals(customerEmail)) return null; // Incorrect email to seatHold
 
-        for (Seat s : sh.getSeatsHold()) s.markReserved();
+        try { v.getSeater().processSeats(sh.getSeatsHold(), SeatState.RESERVED); }
+        catch (Exception e) {
+            /* Error attempting to reserve seat hold. Inform caller of reservation error */
+            try { v.getSeater().processSeats(sh.getSeatsHold(), SeatState.HOLD); }
+            catch (Exception ex) { /* Error attempting to reverse corrupted seat hold. */ }
+        }
 
         String newConfirmationCode = confirmCodeGenerator.generateId();
         confirmationTracker.put(newConfirmationCode, sh);

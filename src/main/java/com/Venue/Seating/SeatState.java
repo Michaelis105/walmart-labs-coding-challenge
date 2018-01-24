@@ -1,4 +1,4 @@
-package main.java.com.Venue;
+package main.java.com.Venue.Seating;
 
 /**
  * Seat's state
@@ -8,4 +8,6 @@ package main.java.com.Venue;
  */
 public enum SeatState {
     OPEN, RESERVED, HOLD
+
+    // Need easier add easier way for other classes to validate a potentially unknown state to list of valid states.
 }
