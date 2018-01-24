@@ -11,14 +11,32 @@ by filling in the front-left-most seat for each row from left to right. The last
 filled is the bottom-right-most one. Indirectly, all seats in a single hold will be in the same row except when there are 
 not enough seats to satisfy request. If so, then the remaining seats in the next row (if any remaining) will be held.
 This is not a viewing experience study but let's assume the best seats are "up close and personal" with the stage.
+3. TODO: List more
+
 
 ### Instructions
 
-#### Building 
+#### Installing
 
-1. Ensure your JAVA_HOME to JDK 1.8.X path.
-2. 
+Assuming Java and Git are setup on device:
+```
+1. git clone https://github.com/Michaelis105/walmart-labs-coding-challenge.git
+2. cd walmart-labs-coding-challenge
+```
+
+#### Building
+
+`./gradlew assemble`
 
 #### Testing
 
+`./gradlew check`
+
 ### Design Overview
+Project not intended for standalone run. Ideally, some other
+service or web application would create instance of TicketService
+for which to pass a venue instance to it.
+
+### Further actions
+1. Migrate project to web service.
+2. TODO: List more
