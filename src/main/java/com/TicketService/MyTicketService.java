@@ -2,6 +2,7 @@ package main.java.com.TicketService;
 
 import main.java.com.Venue.Seating.Seat;
 import main.java.com.Venue.Seating.SeatState;
+import main.java.com.Venue.Seating.Seats;
 import main.java.com.Venue.Venue;
 
 import java.util.*;
@@ -42,12 +43,23 @@ public class MyTicketService implements TicketService {
     }
 
     /**
-     * Finds next best seat in venue seating
+     * Finds next best seat in venue seating by searching
+     * seats from best (front-left) to worst (rear-right).
+     * Very inefficient search, O(N*M) where N = rows and M = columns
      * @return next best seat
      */
     public Seat findNextBestSeat() {
-        // TODO: Implement method
-        throw new UnsupportedOperationException();
+        if (numSeatsAvailable() == 0) return null; // Insufficient seats
+        final Seats seats = v.getSeater().getSeats();
+        for (int i = 0; i < seats.getRowLength(); i++) {
+            for (int j = 0; j < seats.getColumnLength(); j++) {
+                final Seat s = seats.getSeat(i, j);
+                if (SeatState.OPEN.equals(s.getSeatState())) {
+                    return s;
+                }
+            }
+        }
+        return null;
     }
 
     /**

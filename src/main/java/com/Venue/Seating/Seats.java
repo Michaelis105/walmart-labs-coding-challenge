@@ -26,4 +26,14 @@ public class Seats {
             seats.add(aRow);
         }
     }
+
+    public int getRowLength() { return seats.size(); }
+    public int getColumnLength() { return seats.get(0).size(); }
+    public Seat getSeat(int row, int col){
+        Seat s = null;
+        if (row >= 0 && row < seats.size() && col >= 0 && col < seats.get(0).size()) {
+            s = seats.get(row).get(col);
+        }
+        return s;
+    }
 }

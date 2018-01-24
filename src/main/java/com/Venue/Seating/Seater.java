@@ -21,6 +21,13 @@ public class Seater {
         numReservedSeats = 0;
     }
 
+    /**
+     * Gets seats for accessing purposes only.
+     * Important that callers do not modify seats directly.
+     * @return seats
+     */
+    public Seats getSeats() { return seats; }
+
     public int getNumOpenSeats() { return numOpenSeats; }
     public int getNumHoldSeats() { return numHoldSeats; }
     public int getNumReservedSeats() { return numReservedSeats; }
@@ -66,6 +73,5 @@ public class Seater {
                 default: // Unrecognized current state.
             }
         }
-
     }
 }
