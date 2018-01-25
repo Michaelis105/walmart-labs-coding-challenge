@@ -1,6 +1,6 @@
-package java.com.TicketService;
+package TicketService;
 
-import java.com.Venue.Seating.Seat;
+import Venue.Seating.Seat;
 
 import java.util.Date;
 import java.util.LinkedList;

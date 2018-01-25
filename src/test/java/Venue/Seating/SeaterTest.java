@@ -1,4 +1,4 @@
 package Venue.Seating;
 
-public class Seating {
+public class SeaterTest {
 }

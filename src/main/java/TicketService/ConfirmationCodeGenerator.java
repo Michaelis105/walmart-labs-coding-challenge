@@ -1,4 +1,4 @@
-package java.com.TicketService;
+package TicketService;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

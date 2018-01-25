@@ -1,4 +1,4 @@
-package java.com.Venue.Seating;
+package Venue.Seating;
 
 import java.util.List;
 

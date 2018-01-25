@@ -1,4 +1,4 @@
-package java.com.TicketService;
+package TicketService;
 
 /**
  * As provided in spec

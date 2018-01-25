@@ -1,4 +1,4 @@
-package java.com.TicketService;
+package TicketService;
 
 /**
  * IdGenerator generates unique identifications for some object(s).
