@@ -5,6 +5,10 @@ version = '1.0'
 apply plugin: 'java'
 apply plugin: 'idea'
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile files(org.gradle.internal.jvm.Jvm.current().toolsJar)
     testCompile "junit:junit:4.12"

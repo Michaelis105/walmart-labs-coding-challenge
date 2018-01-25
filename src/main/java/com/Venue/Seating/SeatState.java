@@ -1,4 +1,4 @@
-package main.java.com.Venue.Seating;
+package java.com.Venue.Seating;
 
 /**
  * Seat's state

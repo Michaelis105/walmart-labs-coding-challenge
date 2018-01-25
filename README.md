@@ -20,8 +20,8 @@ This is not a viewing experience study but let's assume the best seats are "up c
 
 Assuming Java and Git are setup on device:
 ```
-1. git clone https://github.com/Michaelis105/walmart-labs-coding-challenge.git
-2. cd walmart-labs-coding-challenge
+git clone https://github.com/Michaelis105/walmart-labs-coding-challenge.git
+cd walmart-labs-coding-challenge
 ```
 
 #### Building

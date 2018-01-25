@@ -1,6 +1,6 @@
-package main.java.com.Venue;
+package java.com.Venue;
 
-import main.java.com.Venue.Seating.Seater;
+import java.com.Venue.Seating.Seater;
 
 /**
  * Venue represents any general event.

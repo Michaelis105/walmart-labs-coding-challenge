@@ -1,9 +1,9 @@
-package main.java.com.TicketService;
+package java.com.TicketService;
 
-import main.java.com.Venue.Seating.Seat;
-import main.java.com.Venue.Seating.SeatState;
-import main.java.com.Venue.Seating.Seats;
-import main.java.com.Venue.Venue;
+import java.com.Venue.Seating.Seat;
+import java.com.Venue.Seating.SeatState;
+import java.com.Venue.Seating.Seats;
+import java.com.Venue.Venue;
 
 import java.util.*;
 import java.util.regex.Pattern;

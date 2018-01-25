@@ -1,4 +1,4 @@
-package main.java.com.TicketService;
+package java.com.TicketService;
 
 /**
  * For returning ticket service errors/exceptions to caller.
