@@ -104,6 +104,7 @@ public class MyTicketService implements TicketService {
 
     /**
      * The number of seats in the venue that are neither held nor reserved.
+     * Race condition in count may be acceptable in some cases.
      * @return the number of tickets/seats available in the venue
      */
     public int numSeatsAvailable() {

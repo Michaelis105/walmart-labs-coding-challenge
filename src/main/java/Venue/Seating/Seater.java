@@ -3,7 +3,7 @@ package Venue.Seating;
 import java.util.List;
 
 /**
- * Seater facilitates seating of seats
+ * Seater facilitates seating of seats.
  */
 public class Seater {
 
@@ -11,6 +11,7 @@ public class Seater {
     private int numOpenSeats;
     private int numHoldSeats;
     private int numReservedSeats;
+    private int capacity;
 
     public Seater(int row, int col) {
         if (row <= 0) row = 1;
@@ -19,6 +20,7 @@ public class Seater {
         numOpenSeats = row * col;
         numHoldSeats = 0;
         numReservedSeats = 0;
+        capacity = row * col;
     }
 
     /**
@@ -38,7 +40,7 @@ public class Seater {
      * @param ss seat state to change to
      * @throws Exception
      */
-    public void processSeats(List<Seat> s, SeatState ss) throws Exception {
+    public synchronized void processSeats(List<Seat> s, SeatState ss) throws Exception {
         if (null == s || s.size() == 0) throw new IllegalArgumentException("Seats were null or empty.");
         if (null == ss) throw new IllegalArgumentException("Seat state to save is undefined.");
         for (Seat se : s) {
@@ -46,7 +48,7 @@ public class Seater {
             if (curState.equals(ss)) continue; // Possible race condition, avoid miscounting.
 
             // Decrement counter of corresponding from state.
-            switch(curState) {
+            switch (curState) {
                 case OPEN:
                     numOpenSeats--;
                     break;
@@ -60,17 +62,26 @@ public class Seater {
             }
 
             // Increment counter of corresponding new state and update state.
-            switch(se.getSeatState()) {
+            switch (ss) {
                 case OPEN:
                     se.markOpen();
+                    numOpenSeats++;
                     break;
                 case HOLD:
                     se.markHold();
+                    numHoldSeats++;
                     break;
                 case RESERVED:
                     se.markReserved();
+                    numReservedSeats++;
                     break;
                 default: // Unrecognized current state.
+            }
+
+            if (numOpenSeats < 0  || numOpenSeats > capacity ||
+                    numHoldSeats < 0 || numHoldSeats > capacity ||
+                    numReservedSeats < 0 || numReservedSeats > capacity) {
+                // Race condition
             }
         }
     }

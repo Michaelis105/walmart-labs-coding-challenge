@@ -1,6 +1,7 @@
 package Venue.Seating;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,10 +19,13 @@ public class Seats {
     public Seats(int row, int col) {
         if (row <= 0) row = 1;
         if (col <= 0) col = 1;
+
+        seats = new ArrayList<List<Seat>>();
         for (int i = 0; i < row; i++) {
             List<Seat> aRow = new ArrayList<Seat>();
             for (int j = 0; j < col; j++) {
                 aRow.add(new Seat(i + j)); // Seat ID is row + col (00, 01, 02, ..., NM)
+                                               // Digit does not always correlate with row and column.
             }
             seats.add(aRow);
         }
