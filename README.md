@@ -1,3 +1,5 @@
+Timestamp 01/26/2018 00:05: This is the final commit to this project and represents my final version for my submission. 
+
 ## Walmart Labs Ticket Service
 Implementation of a simple ticket service that facilitates the discovery, temporary hold, and final reservation of seats
 within a high-demand performance venue.
@@ -80,3 +82,4 @@ reserveSeats():
 3. Change TicketService interface to allow for proper exception catching.
 4. Create some UML diagrams or something to illustrate system architecture and workflow.
 5. Change TicketService to make recognizing seat arrangement more generic.
+6. I think I missed a few test cases, got to go fix them.
