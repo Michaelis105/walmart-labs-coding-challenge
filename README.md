@@ -11,8 +11,13 @@ by filling in the front-left-most seat for each row from left to right. The last
 filled is the bottom-right-most one. Indirectly, all seats in a single hold will be in the same row except when there are 
 not enough seats to satisfy request. If so, then the remaining seats in the next row (if any remaining) will be held.
 This is not a viewing experience study but let's assume the best seats are "up close and personal" with the stage.
-3. TODO: List more
-
+3. TicketService interface does not have proper signatures to handle exceptions. All erroring operations in regards to TicketService will either return null, an "error code", or do nothing (left comments for what the error is and what should be done to catch error).
+4. TicketService should be used as an attachable service to a larger product. In other words, this project is not intended to be working standalone. Some other product must provide the TicketService a venue (and seats) to facilitate ticket operations.
+4. A customer hold and reserve any number of seats any number of times.
+5. A seat hold's expiration is determined by the duration of the current time and seat hold creation time exceeding the expiration time threshold (in seconds). Threshold is configurable in source code. 
+6. The cleanup of expired seat holds would be run by some batch/cron job if this implementation was migrated to a web service.
+7. Since the seat hold is assigned an ID, the caller should use this instead of the seat hold. The seat hold is for TicketService internal purposes only and should not be modified by anything outside it.
+8. A venue will always have seats.
 
 ### Instructions
 
@@ -33,10 +38,11 @@ cd walmart-labs-coding-challenge
 `./gradlew check`
 
 ### Design Overview
-Project not intended for standalone run. Ideally, some other
-service or web application would create instance of TicketService
-for which to pass a venue instance to it.
+Project not intended for standalone run. Ideally, some other service or web application would create instance of TicketService
+for which to pass a venue instance to it. I apologize for the lack of diagrams as I ran out of time to properly document everything.
 
 ### Further actions
 1. Migrate project to web service.
-2. TODO: List more
+2. Externalize seatHold expiration.
+3. Change TicketService interface to allow for proper exception catching.
+4. Create some UML diagrams or something to illustrate system architecture and workflow.
