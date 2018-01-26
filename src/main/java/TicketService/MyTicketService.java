@@ -75,12 +75,14 @@ public class MyTicketService implements TicketService {
      */
     public void removeExpiredSeatHolds() {
         Date cur = new Date();
-        for (Map.Entry<Integer, SeatHold> entry : seatHoldTracker.entrySet()) {
-            SeatHold sh = entry.getValue();
+        Iterator<Map.Entry<Integer,SeatHold>> it = seatHoldTracker.entrySet().iterator();
+        while (it.hasNext()) {
+            SeatHold sh = it.next().getValue();
             long duration = cur.getTime() - sh.getCreateDate().getTime();
             if (duration >= holdExpirationTime) {
                 try { v.getSeater().processSeats(sh.getSeatsHold(), SeatState.OPEN); }
                 catch (Exception e) { /* Error "releasing" held seats. */ }
+                it.remove();
                 seatHoldTracker.remove(sh.getSeatHoldId(), sh);
             }
         }

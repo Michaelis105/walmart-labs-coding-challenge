@@ -63,7 +63,6 @@ public class TicketServiceTest {
         String conf4 = mts1.reserveSeats(shid4, simpleEmail);
         Assert.assertNull(conf3);
         Assert.assertNull(conf4);
-        // TODO: Check it works, ConcurrentModificationException
     }
 
     @Test
@@ -91,7 +90,7 @@ public class TicketServiceTest {
     }
 
     @Test
-    public void findAndHoldSeatsBadArgs() throws TicketServiceException {
+    public void FindAndHoldSeatsBadArgs() throws TicketServiceException {
         Venue v1 = new Venue(5,5);
         MyTicketService mts1 = new MyTicketService(v1, 1000);
         String simpleEmail = "anne.bobby@gmail.com";
