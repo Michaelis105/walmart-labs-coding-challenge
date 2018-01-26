@@ -1,5 +1,6 @@
 package Venue.Seating;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -33,6 +34,12 @@ public class Seater {
     public int getNumOpenSeats() { return numOpenSeats; }
     public int getNumHoldSeats() { return numHoldSeats; }
     public int getNumReservedSeats() { return numReservedSeats; }
+
+    public synchronized void processSeat(Seat s, SeatState ss) throws Exception {
+        List<Seat> sl = new LinkedList<Seat>();
+        sl.add(s);
+        processSeats(sl, ss);
+    }
 
     /**
      * Change the state of given seats to some state and update counters.

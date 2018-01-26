@@ -32,20 +32,17 @@ public class SeaterTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void ProcessSeatsNull1() throws Exception {
-        Seater s1 = new Seater(50, 50);
-        s1.processSeats(null, null);
+        new Seater(50,50).processSeats(null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ProcessSeatsNull2() throws Exception {
-        Seater s1 = new Seater(50, 50);
-        s1.processSeats(new LinkedList<Seat>(), null);
+        new Seater(50,50).processSeats(new LinkedList<Seat>(), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void ProcessSeatsNoSeats() throws Exception {
-        Seater s1 = new Seater(50, 50);
-        s1.processSeats(new LinkedList<Seat>(), SeatState.HOLD);
+        new Seater(50,50).processSeats(new LinkedList<Seat>(), SeatState.HOLD);
     }
 
     @Test
@@ -142,7 +139,7 @@ public class SeaterTest {
         t3.start();
         t4.start();
 
-        // TODO: Seater reference is incorrect
+        // TODO: Seater reference is incorrect, test does not work
         // Note: If at least one count is true, then no two threads were modifying counters concurrently.
         // This is okay. Simulate different customer calls at different times. First come, first serve.
         Assert.assertTrue(multi.getNumOpenSeats() == 16 || multi.getNumHoldSeats() == 16 || multi.getNumReservedSeats() == 16);

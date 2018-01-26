@@ -43,7 +43,7 @@ public class MyTicketService implements TicketService {
     }
 
     /**
-     * Finds next best seat in venue seating by searching
+     * Finds next best open seat in venue seating by searching
      * seats from best (front-left) to worst (rear-right).
      * Very inefficient search, O(N*M) where N = rows and M = columns
      * @return next best seat
@@ -55,6 +55,12 @@ public class MyTicketService implements TicketService {
             for (int j = 0; j < seats.getColumnLength(); j++) {
                 final Seat s = seats.getSeat(i, j);
                 if (SeatState.OPEN.equals(s.getSeatState())) {
+                    try {
+                        v.getSeater().processSeat(s, SeatState.SYS_HOLD);
+                    } catch (Exception e) {
+                        // Error marking seat as system hold. Not sure what case causes this to happen.
+                        // Need to investigate.
+                    }
                     return s;
                 }
             }
@@ -69,10 +75,11 @@ public class MyTicketService implements TicketService {
      */
     public void removeExpiredSeatHolds() {
         Date cur = new Date();
-        for (SeatHold sh : seatHoldTracker.values()) {
+        for (Map.Entry<Integer, SeatHold> entry : seatHoldTracker.entrySet()) {
+            SeatHold sh = entry.getValue();
             long duration = cur.getTime() - sh.getCreateDate().getTime();
             if (duration >= holdExpirationTime) {
-                try { markSeatsOpen(sh.getSeatsHold()); }
+                try { v.getSeater().processSeats(sh.getSeatsHold(), SeatState.OPEN); }
                 catch (Exception e) { /* Error "releasing" held seats. */ }
                 seatHoldTracker.remove(sh.getSeatHoldId(), sh);
             }
@@ -100,6 +107,21 @@ public class MyTicketService implements TicketService {
      */
     public boolean isValidEmail(final String email) { return Pattern.compile(EMAIL_PATTERN).matcher(email).matches(); }
 
+    /**
+     * Wrapper to actual findAndHoldSeats(). Caller should not handle seatHold
+     * object directly; rather, it should receive and handle its ID.
+     * @param numSeats      the number of seats to find and hold
+     * @param customerEmail unique identifier for the customer related information
+     * @return seatHold id
+     */
+    public int findAndHoldSeatsWrap(int numSeats, String customerEmail) {
+        SeatHold sh = findAndHoldSeats(numSeats, customerEmail);
+        if (sh != null) {
+            seatHoldTracker.put(sh.getSeatHoldId(), sh);
+            return sh.getSeatHoldId();
+        } else return -1;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -116,6 +138,7 @@ public class MyTicketService implements TicketService {
      * Synchronizing leads to performance bottleneck such that only one thread can find seats and mark them as held at
      * a time. This is to avoid multiple threads retrieving and marking the same seats resulting in multiple seats being
      * held by multiple customers.
+     * Use findAndHoldSeatsWrap() instead!
      * @param numSeats      the number of seats to find and hold
      * @param customerEmail unique identifier for the customer related information
      */
@@ -129,8 +152,8 @@ public class MyTicketService implements TicketService {
             Seat s = findNextBestSeat();
             if (null == s) {
                 // Already checked sufficient seats but still ran out, possible race condition
-                try { markSeatsOpen(seats); }
-                catch (TicketServiceException e) { /* Error attempting to clean up corrupted seat hold. */ }
+                try { v.getSeater().processSeats(seats, SeatState.OPEN); }
+                catch (Exception e) { /* Error attempting to clean up corrupted seat hold. */ }
                 return null;
             }
             seats.add(s);
@@ -139,8 +162,8 @@ public class MyTicketService implements TicketService {
         try { v.getSeater().processSeats(seats, SeatState.HOLD); }
         catch (Exception e) {
             /* Error attempting to hold seats. Inform caller of holding error. */
-            try { markSeatsOpen(seats); }
-            catch (TicketServiceException ex) { /* Error attempting to clean up corrupted seat hold. */ }
+            try { v.getSeater().processSeats(seats, SeatState.OPEN); }
+            catch (Exception ex) { /* Error attempting to clean up corrupted seat hold. */ }
         }
 
         int seatHoldId = Integer.valueOf(seatHoldIdGenerator.generateId());
@@ -149,16 +172,17 @@ public class MyTicketService implements TicketService {
             sh = new SeatHold(seatHoldId, customerEmail, seats);
         } catch (TicketServiceException e) {
             // Issue creating seatHold (empty seats list already checked handled above, error should not occur)
-            try { markSeatsOpen(seats); }
-            catch (TicketServiceException ex) { /* Error attempting to clean up corrupted seat hold. */ }
+            try { v.getSeater().processSeats(seats, SeatState.OPEN); }
+            catch (Exception ex) { /* Error attempting to clean up corrupted seat hold. */ }
             return null;
         }
-        seatHoldTracker.put(seatHoldId, sh);
+
         return sh;
     }
 
     /**
      * Commit seats held for a specific customer
+     * @pre   seatHoldId must be stored in seatHoldTracker
      * @param seatHoldId    the seat hold identifier
      * @param customerEmail the email address of the customer to which the seat hold
      *                      is assigned

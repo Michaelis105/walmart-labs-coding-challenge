@@ -25,5 +25,6 @@ public class Seat {
     public void markOpen() { ss = SeatState.OPEN; }
     public void markHold() { ss = SeatState.HOLD; }
     public void markReserved() { ss = SeatState.RESERVED; }
+    public void markSysHold() { ss = SeatState.SYS_HOLD; }
 
 }
