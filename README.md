@@ -41,7 +41,7 @@ cd walmart-labs-coding-challenge
 Project not intended for standalone run. Ideally, some other service or web application would create instance of TicketService
 for which to pass a venue instance to it. I apologize for the lack of diagrams as I ran out of time to properly document everything.
 
-![Walmart](https://github.com/Michaelis105/walmart-labs-coding-challenge/blob/master/walmartClassDiagram.JPG)
+![Walmart](https://github.com/Michaelis105/walmart-labs-coding-challenge/blob/master/walmartClassDiagram.jpg)
 
 ### Further actions
 1. Migrate project to web service.
