@@ -202,6 +202,7 @@ public class MyTicketService implements TicketService {
         }
 
         String newConfirmationCode = confirmCodeGenerator.generateId();
+        sh.setConfirmationCode(newConfirmationCode);
         confirmationTracker.put(newConfirmationCode, sh);
         seatHoldTracker.remove(seatHoldId, sh);
         return newConfirmationCode;

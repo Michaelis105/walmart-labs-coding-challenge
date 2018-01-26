@@ -15,6 +15,7 @@ public class SeatHold {
     private final String customerEmail;
     private List<Seat> seatsHold;
     private Date createDate;
+    private String confirmationCode;
 
     public SeatHold(int seatHoldId, String customerEmail, List<Seat> seatsHold) throws TicketServiceException {
         this.seatHoldId = seatHoldId;
@@ -48,4 +49,16 @@ public class SeatHold {
      */
     public Date getCreateDate() { return createDate; }
 
+    /**
+     * Overwrite confirmation code of seatHold.
+     * Note: Do not use this method until seatHold is officially reserved.
+     * @param cc confirmation code
+     */
+    public void setConfirmationCode(String cc) { confirmationCode = cc; }
+
+    /**
+     * Gets confirmation code of seat hold.
+     * @return confirmation code
+     */
+    public String getConfirmationCode() { return confirmationCode; }
 }

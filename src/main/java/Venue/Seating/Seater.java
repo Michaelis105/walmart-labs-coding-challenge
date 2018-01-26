@@ -35,6 +35,12 @@ public class Seater {
     public int getNumHoldSeats() { return numHoldSeats; }
     public int getNumReservedSeats() { return numReservedSeats; }
 
+    /**
+     * Change the state of a given seat to some state and update counters.
+     * @param s list of seats to change state
+     * @param ss seat state to change to
+     * @throws Exception
+     */
     public synchronized void processSeat(Seat s, SeatState ss) throws Exception {
         List<Seat> sl = new LinkedList<Seat>();
         sl.add(s);
@@ -82,6 +88,8 @@ public class Seater {
                     se.markReserved();
                     numReservedSeats++;
                     break;
+                case SYS_HOLD:
+                    se.markSysHold();
                 default: // Unrecognized current state.
             }
 

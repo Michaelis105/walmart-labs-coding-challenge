@@ -73,19 +73,19 @@ public class TicketServiceTest {
 
     @Test
     public void NumSeatsAvailableAndFindAndHoldSeats() throws TicketServiceException {
-        Venue v1 = new Venue(5,5);
+        Venue v1 = new Venue(3,3);
         MyTicketService mts1 = new MyTicketService(v1, 1000);
-        Assert.assertEquals(25, mts1.numSeatsAvailable()); // All available
+        Assert.assertEquals(9, mts1.numSeatsAvailable()); // All available
 
         String simpleEmail = "anne.bobby@gmail.com";
         mts1.findAndHoldSeatsWrap(1, simpleEmail);
-        Assert.assertEquals(24, mts1.numSeatsAvailable()); // -1
+        Assert.assertEquals(8, mts1.numSeatsAvailable()); // -1
         mts1.findAndHoldSeatsWrap(2, simpleEmail);
-        Assert.assertEquals(22, mts1.numSeatsAvailable()); // -3
-        mts1.findAndHoldSeatsWrap(10, simpleEmail);
-        Assert.assertEquals(12, mts1.numSeatsAvailable()); // -13
-        mts1.findAndHoldSeatsWrap(12, simpleEmail);
-        Assert.assertEquals(0, mts1.numSeatsAvailable()); // -25
+        Assert.assertEquals(6, mts1.numSeatsAvailable()); // -2
+        mts1.findAndHoldSeatsWrap(3, simpleEmail);
+        Assert.assertEquals(3, mts1.numSeatsAvailable()); // -3
+        mts1.findAndHoldSeatsWrap(3, simpleEmail);
+        Assert.assertEquals(0, mts1.numSeatsAvailable()); // -3
 
         // TODO: Avail not decrementing
     }
@@ -133,10 +133,10 @@ public class TicketServiceTest {
 
     @Test
     public void ReserveSeatsBadArgs() throws TicketServiceException {
-        Venue v1 = new Venue(5,5);
+        Venue v1 = new Venue(3,3);
         MyTicketService mts1 = new MyTicketService(v1, 1000);
         String simpleEmail = "anne.bobby@gmail.com";
-        int shid1 = mts1.findAndHoldSeatsWrap(4, simpleEmail);
+        int shid1 = mts1.findAndHoldSeatsWrap(6, simpleEmail);
 
         // Bad id
         Assert.assertNull(mts1.reserveSeats(99999999, simpleEmail));
@@ -148,11 +148,12 @@ public class TicketServiceTest {
         Assert.assertNull(mts1.reserveSeats(shid1, "anne.charlie@gmail.com"));
 
         // Verify seats are still held.
-        Assert.assertEquals(21, v1.getSeater().getNumOpenSeats());
-        Assert.assertEquals(4, v1.getSeater().getNumHoldSeats());
+        Assert.assertEquals(3, v1.getSeater().getNumOpenSeats());
+        Assert.assertEquals(6, v1.getSeater().getNumHoldSeats());
         Assert.assertEquals(0, v1.getSeater().getNumReservedSeats());
-        for (int i = 0; i < v1.getSeater().getSeats().getRowLength(); i++) {
-            Assert.assertEquals(SeatState.HOLD, v1.getSeater().getSeats().getSeat(0, i));
+        for (int i = 0; i < v1.getSeater().getSeats().getColumnLength(); i++) {
+            Assert.assertEquals(SeatState.HOLD, v1.getSeater().getSeats().getSeat(0, i).getSeatState());
+            Assert.assertEquals(SeatState.HOLD, v1.getSeater().getSeats().getSeat(1, i).getSeatState());
         }
     }
 }
